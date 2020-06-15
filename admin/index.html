@@ -92,7 +92,6 @@
     <script>
         // 入口函数
         $(function () {
-            $('.level02').show()
             // 发送ajax请求
             $.ajax({
                 url: BigNew.user_info,
@@ -112,7 +111,22 @@
                     window.location.href = './login.html'
                 }
             })
-
+            // 给一级菜单设置一个点击事件
+            $('div.level01').on('click', function () {
+                $(this).addClass('active').siblings().removeClass('active');
+                if ($(this).index() == 1) {
+                    // 隐藏和显示中来回切换
+                    $('ul.level02').slideToggle();
+                    // toggleClass() 对设置或移除被选元素的一个或多个类进行切换
+                    $(this).find('b').toggleClass('rotate0');
+                    // 触发二级菜单的第一个li的点击事件
+                    $('ul.level02>li').eq(0).trigger('click');
+                }
+            })
+            // 给二级菜单设置点击事件
+            $('ul.level02>li').on('click',function(){
+                $(this).addClass('active').siblings('li').removeClass('active');
+            })
         })
     </script>
 </body>
