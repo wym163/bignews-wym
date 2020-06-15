@@ -92,11 +92,12 @@
     <script>
         // 入口函数
         $(function () {
+            $('.level02').show()
             // 发送ajax请求
             $.ajax({
                 url: BigNew.user_info,
                 success: function (backData) {
-                    console.log(backData);
+                    // console.log(backData);
                     if (backData.code == 200) {
                         $('.user_info>img').attr('src', backData.data.userPic);
                         $('.user_info>span>i').text(backData.data.nickname);
