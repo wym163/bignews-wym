@@ -13,6 +13,8 @@
     <script src="./libs/jquery-1.12.4.min.js"></script>
     <!-- 导入bootstrap的js文件 -->
     <script src="./libs/bootstrap/js/bootstrap.min.js"></script>
+    <!-- 导入http.js -->
+    <script src="./libs/http.js"></script>
 </head>
 
 <body>
@@ -60,7 +62,7 @@
         $(function(){
             // 发送ajax请求
             $.ajax({
-                url:'http://localhost:8080/api/v1/admin/user/info',
+                url:BigNew.user_info,
                 success:function(backData){
                     console.log(backData);
                     if(backData.code == 200) {
@@ -70,7 +72,13 @@
                     }
                 }
             })
-            // 
+            // 给退出按钮一个点击事件
+            $('.logout').on('click',function(){
+                if(confirm('确定退出登录吗')) {
+                    // localStorage.removeItem('token');
+                    window.location.href = './login.html'
+                }
+            })
         
         })
     </script>

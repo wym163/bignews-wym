@@ -15,6 +15,8 @@
   <script src="./libs/jquery-1.12.4.min.js"></script>
   <!-- 引入bootstrap的js文件 -->
   <script src="./libs/bootstrap/js/bootstrap.min.js"></script>
+  <!-- 导入http.js -->
+  <script src="./libs/http.js"></script>
 </head>
 
 <body>
@@ -79,7 +81,7 @@
         // 发送ajax请求
         $.ajax({
           type: 'post',
-          url: 'http://localhost:8080/api/v1/admin/user/login',
+          url: BigNew.user_login,
           data: {
             username: username,
             password: password
@@ -90,13 +92,18 @@
               // 弹出框
               $('.modal-body').text(backData.msg);
               $('#myModal').modal();
-              window.location.href = './index.html'
+              // 这里是关闭弹出框才会执行的代码
+              $('#myModal').on('hidden.bs.modal', function (e) {
+                // 保存token到本地
+                localStorage.setItem('token', backData.token),
+                window.location.href = './index.html'
+              })
             } else (
               // 弹出框
               $('.modal-body').text(backData.msg),
               $('#myModal').modal()
             )
-      }
+          }
         })
       })
     })
