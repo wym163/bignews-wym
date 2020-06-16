@@ -71,29 +71,29 @@
     </div>
     <script>
         // 入口函数
-        $(function(){
+        $(function () {
             // 头像预览
-            $('#exampleInputFile').on('change',function(){
+            $('#exampleInputFile').on('change', function () {
                 var file1 = this.files[0];
                 var url1 = URL.createObjectURL(file1);
-                $('.user_pic').attr('src',url1)
+                $('.user_pic').attr('src', url1)
             })
             // 一进到页面发送ajax请求,拿到用户信息
             $.ajax({
-                url:BigNew.user_detail,
-                success:function(backData){
+                url: BigNew.user_detail,
+                success: function (backData) {
                     // console.log(backData);
-                    if(backData.code == 200) {
+                    if (backData.code == 200) {
                         $('.username').val(backData.data.username);
                         $('.nickname').val(backData.data.nickname);
                         $('.email').val(backData.data.email);
-                        $('.col-sm-10>img').attr('src',backData.data.userPic)
+                        $('.col-sm-10>img').attr('src', backData.data.userPic)
                         $('.password').val(backData.data.password)
                     }
                 }
             })
             // 给修改设置一个点击事件
-            $('.btn-edit').on('click',function(e){
+            $('.btn-edit').on('click', function (e) {
                 e.preventDefault();
                 // 修改用户信息
                 var fd = new FormData($('form')[0]);
@@ -102,17 +102,18 @@
                 // console.log(fd.get('username'));
                 // console.log(fd.get('username'));
                 // console.log(fd.get('username'));
-                
+
                 $.ajax({
-                    type:'post',
-                    url:BigNew.user_edit,
-                    data:fd,
-                    contentType:false,
-                    processData:false,
-                    success:function(backData){
+                    type: 'post',
+                    url: BigNew.user_edit,
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    success: function (backData) {
                         console.log(backData);
-                        if(backData.code == 200) {
+                        if (backData.code == 200) {
                             alert(backData.msg);
+                            parent.window.location.reload(); 
                         }
                     }
                 })
