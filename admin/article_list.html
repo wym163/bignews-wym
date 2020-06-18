@@ -73,6 +73,8 @@
             <div class="row text-center">
             </div>
         </div>
+        <!-- 分页插件 -->
+        <ul class="pagination" id="pagination"></ul>
     </div>
     <!-- 准备一个文章搜索模板 -->
     <script id="category_list" type="text/html">
@@ -81,19 +83,85 @@
         <option value="{{v.id}}">{{v.name}}</option>
         {{/each}}
     </script>
+    <!-- 准备一个文章模板 -->
+    <script id="article_list" type="text/html">
+        {{each data.data v}}
+        <tr>
+            <td>{{v.title}}</td>
+            <td>{{v.author}}</td>
+            <td>{{v.category}}</td>
+            <td class="text-center">{{v.date}}</td>
+            <td class="text-center">{{v.state}}</td>
+            <td class="text-center">
+                <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
+                <a href="javascript:void(0);" data-id="{{v.categoryId}}" class="btn btn-danger btn-xs delete">删除</a>
+            </td>
+        </tr>
+        {{/each}}
+    </script>
     <script>
-        $(function(){
+        $(function () {
             // 进到页面发送ajax请求渲染下拉框
-        $.ajax({
-            url: BigNew.category_list,
-            success: function (backData) {
-                console.log(backData);
-                if (backData.code == 200) {
-                    var resHtml = template('category_list', backData)
-                    $('#selCategory').html(resHtml)
+            $.ajax({
+                url: BigNew.category_list,
+                success: function (backData) {
+                    // console.log(backData);
+                    if (backData.code == 200) {
+                        var resHtml = template('category_list', backData)
+                        $('#selCategory').html(resHtml)
+                    }
                 }
-            }
-        })
+            })
+            // 发送ajax请求渲染到页面
+            $.ajax({
+                url: BigNew.article_query,
+                data: {
+                    type: $('#selCategory').val(),
+                    state: $('#selStatus').val(),
+                    page: 1,
+                    perpage: 5
+                },
+                success: function (backData) {
+                    // console.log(backData);
+                    if (backData.code == 200) {
+                        var resList = template('article_list', backData)
+                        $('tbody').html(resList)
+                    }
+                }
+            })
+            // 给筛选按钮一个点击事件
+            $('#btnSearch').on('click', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: BigNew.article_query,
+                    data: {
+                        type: $('#selCategory').val(),
+                        state: $('#selStatus').val(),
+                        page: 1,
+                        perpage: 5
+                    },
+                    success: function (backData) {
+                        console.log(backData);
+                        if (backData.code == 200) {
+                            var resList = template('article_list', backData)
+                            $('tbody').html(resList)
+                        }
+                    }
+                })
+                console.log($('#selCategory').val());
+
+            })
+            // 分页插件
+            window.pagObj = $('#pagination').twbsPagination({
+                totalPages: 35,
+                visiblePages: 10,
+                onPageClick: function (event, page) {
+                    console.info(page + ' (from options)');
+                }
+            }).on('page', function (event, page) {
+                console.info(page + ' (from event listening)');
+            });
+
         })
     </script>
 </body>
