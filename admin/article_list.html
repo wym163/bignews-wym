@@ -13,6 +13,8 @@
     <script src="./libs/jquery-1.12.4.min.js"></script>
     <!-- 引入模板引擎js文件 -->
     <script src="./libs/template-web.js"></script>
+    <!-- 导入http.js -->
+    <script src="./libs/http.js"></script>
 </head>
 
 <body>
@@ -72,6 +74,28 @@
             </div>
         </div>
     </div>
+    <!-- 准备一个文章搜索模板 -->
+    <script id="category_list" type="text/html">
+        <option value="">所有分类</option>
+        {{each data v}}
+        <option value="{{v.id}}">{{v.name}}</option>
+        {{/each}}
+    </script>
+    <script>
+        $(function(){
+            // 进到页面发送ajax请求渲染下拉框
+        $.ajax({
+            url: BigNew.category_list,
+            success: function (backData) {
+                console.log(backData);
+                if (backData.code == 200) {
+                    var resHtml = template('category_list', backData)
+                    $('#selCategory').html(resHtml)
+                }
+            }
+        })
+        })
+    </script>
 </body>
 
 </html>
