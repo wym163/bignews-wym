@@ -77,6 +77,7 @@
             <div class="row text-center">
                 <!-- 分页插件 -->
                 <ul class="pagination" id="pagination"></ul>
+                <p>没有数据！</p>
             </div>
         </div>
     </div>
@@ -98,7 +99,7 @@
             <td class="text-center">{{v.state}}</td>
             <td class="text-center">
                 <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
-                <a href="javascript:void(0);" data-id="{{v.categoryId}}" class="btn btn-danger btn-xs delete">删除</a>
+                <a href="javascript:void(0);" data-id="{{v.id}}" class="btn btn-danger btn-xs delete">删除</a>
             </td>
         </tr>
         {{/each}}
@@ -116,15 +117,17 @@
                     }
                 }
             })
+            // 声明一个变量
+            var myPage = 1
             // 封装函数
-            function getData(mypage, callback) {
+            function getData(myPage, callback) {
                 $.ajax({
                     url: BigNew.article_query,
                     data: {
                         type: $('#selCategory').val(),
                         state: $('#selStatus').val(),
-                        page: mypage,
-                        perpage: 5
+                        page: myPage,
+                        perpage: 2
                     },
                     success: function (backData) {
                         // console.log(backData);
@@ -132,9 +135,19 @@
                             var resList = template('article_list', backData)
                             $('tbody').html(resList)
 
-                            if (callback != null) {
+                            if (backData.data.data.length != 0 && callback != null) {
+                                // 有数据
+                                $('#pagination').show();
+                                $('#pagination').next('p').hide();
                                 callback(backData);
-                            }
+                            } else if (backData.data.data.length == 0 && myPage == 1) {
+                                // 没有数据
+                                $('#pagination').hide();
+                                $('#pagination').next('p').show();
+                            } else if (backData.data.totalPage == myPage - 1 && backData.data.data.length == 0) {
+                                myPage -= 1;
+                                $('#pagination').twbsPagination('changeTotalPages', backData.data.totalPage, myPage)
+                            } 
                         }
                     }
                 })
@@ -150,6 +163,7 @@
                     totalPages: backData.data.totalPage,
                     visiblePages: 7,
                     onPageClick: function (event, page) {
+                        myPage = page;
                         getData(page, null)
                     }
                 })
@@ -157,79 +171,38 @@
             // 给筛选按钮一个点击事件
             $('#btnSearch').on('click', function (e) {
                 e.preventDefault();
-                getData(1, function (backData) {
-                    $('#pagination').twbsPagination('changeTotalPages', backData.data.totalPage, 1)
+                getData(myPage, function (backData) {
+                    myPage = 1
+                    $('#pagination').twbsPagination('changeTotalPages', backData.data.totalPage, myPage)
                 })
             })
-            // // 发送ajax请求渲染到页面
-            // $.ajax({
-            //     url: BigNew.article_query,
-            //     data: {
-            //         type: $('#selCategory').val(),
-            //         state: $('#selStatus').val(),
-            //         page: 1,
-            //         perpage: 5
-            //     },
-            //     success: function (backData) {
-            //         // console.log(backData);
-            //         if (backData.code == 200) {
-            //             var resList = template('article_list', backData)
-            //             $('tbody').html(resList)
+            // 删除按钮添加一个点击事件
+            $('tbody').on('click', 'a.delete', function () {
+                var id = $(this).attr('data-id')
+                if (confirm('确定要删除吗')) {
+                    $.ajax({
+                        type: 'post',
+                        url: BigNew.article_delete,
+                        data: {
+                            id: id
+                        },
+                        success: function (backData) {
+                            console.log(backData);
+                            if (backData.code == 204) {
+                                getData(myPage, function (backData) {
+                                    $('#pagination').twbsPagination('changeTotalPages', backData.data.totalPage, myPage)
+                                })
 
-            //             // 分页插件
-            //             $('#pagination').twbsPagination({
-            //                 first: '首页',
-            //                 prev: '上一页',
-            //                 next: '下一页',
-            //                 last: '尾页',
-            //                 totalPages: backData.data.totalPage,
-            //                 visiblePages: 7,
-            //                 onPageClick: function (event, page) {
-            //                     $.ajax({
-            //                         url: BigNew.article_query,
-            //                         data: {
-            //                             type: $('#selCategory').val(),
-            //                             state: $('#selStatus').val(),
-            //                             page: page,
-            //                             perpage: 5
-            //                         },
-            //                         success: function (backData) {
-            //                             // console.log(backData);
-            //                             if (backData.code == 200) {
-            //                                 var resList = template('article_list', backData)
-            //                                 $('tbody').html(resList)
-            //                             }
-            //                         }
-            //                     })
-            //                 }
-            //             })
-
-            //         }
-            //     }
-            // })
-            // // 给筛选按钮一个点击事件
-            // $('#btnSearch').on('click', function (e) {
-            //     e.preventDefault();
-            //     $.ajax({
-            //         url: BigNew.article_query,
-            //         data: {
-            //             type: $('#selCategory').val(),
-            //             state: $('#selStatus').val(),
-            //             page: 1,
-            //             perpage: 5
-            //         },
-            //         success: function (backData) {
-            //             console.log(backData);
-            //             if (backData.code == 200) {
-            //                 var resList = template('article_list', backData)
-            //                 $('tbody').html(resList)
-
-            //                 $('#pagination').twbsPagination('changeTotalPages',backData.data.totalPage,1)
-            //             }
-            //         }
-            //     })
-            // })
-
+                            }
+                        }
+                    })
+                }
+            })
+            // 给发表按钮一个点击事件
+            $('#release_btn').on('click',function(){
+                // window.location.href = './arti'
+                parent.$('ul>.level02').eq(1).trigger('click');
+            })
 
         })
     </script>
