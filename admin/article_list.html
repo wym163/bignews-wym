@@ -98,7 +98,7 @@
             <td class="text-center">{{v.date}}</td>
             <td class="text-center">{{v.state}}</td>
             <td class="text-center">
-                <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
+                <a href="article_edit.html?id={{v.id}}" class="btn btn-default btn-xs">编辑</a>
                 <a href="javascript:void(0);" data-id="{{v.id}}" class="btn btn-danger btn-xs delete">删除</a>
             </td>
         </tr>
@@ -199,9 +199,8 @@
                 }
             })
             // 给发表按钮一个点击事件
-            $('#release_btn').on('click',function(){
-                // window.location.href = './arti'
-                parent.$('ul>.level02').eq(1).trigger('click');
+            $('#release_btn').on('click', function () {
+                parent.$('ul.level02>li:eq(1)').click()
             })
 
         })
