@@ -292,7 +292,7 @@
     <!-- 文章类型 -->
     <script id="category" type="text/html">
         {{each data v}}
-        <li><a href="./article.html?id={{v.id}}">{{v.name}}</a></li>
+        <li><a href="./list.html?categoryId={{v.id}}">{{v.name}}</a></li>
         {{/each}}
     </script>
     <script>
@@ -357,7 +357,7 @@
             $.ajax({
                 url:'http://localhost:8080/api/v1/index/category',
                 success:function(backData){
-                    console.log(backData);
+                    // console.log(backData);
                     if(backData.code == 200) {
                         var resHtml = template('category',backData);
                         $('ul.level_two').html(resHtml)
@@ -366,6 +366,16 @@
                     }
                 }
             })
+            // 给搜索按钮一个点击事件
+            $('.search_btn').on('click',function(){
+                var searchWord = $('.search_txt').val().trim();
+                if(searchWord == "") {
+                    alert('请输入要搜索的内容');
+                    return
+                }
+                window.location.href = './list.html?search='+searchWord;
+            })
+            
         })
     </script>
 </body>
