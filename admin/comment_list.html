@@ -188,39 +188,75 @@
     // 入口函数
     $(function () {
       // 发送ajax请求拿到评论渲染
-      $.ajax({
+      function getData() {
+        $.ajax({
         url: BigNew.comment_list,
         data: {
           page: 1,
           perpage: 6
         },
         success: function (backData) {
-          console.log(backData);
+          // console.log(backData);
           if (backData.code == 200) {
-            var resHtml = template('comment_list',backData);
+            var resHtml = template('comment_list', backData);
             $('tbody').html(resHtml)
           }
         }
       })
+      }
+      getData()
       // 给批准一个点击事件
-      $('tbody').on('click','a.btn-pizhun',function(){
+      $('tbody').on('click', 'a.btn-pizhun', function () {
         var commentId = $(this).attr('data-id');
         $.ajax({
-          type:'post',
-          url:BigNew.comment_pass,
-          data:{
-            id:commentId
+          type: 'post',
+          url: BigNew.comment_pass,
+          data: {
+            id: commentId
           },
-          success:function(backData){
+          success: function (backData) {
             console.log(backData);
-            if(backData.code ==200) {
-              
+            if (backData.code == 200) {
+              alert(backData.msg)
+              getData()
             }
           }
         })
       })
       // 给拒绝一个点击事件
+      $('tbody').on('click', 'a.btn-jujue', function () {
+        var commentId = $(this).attr('data-id');
+        $.ajax({
+          type: 'post',
+          url: BigNew.comment_reject,
+          data: {
+            id: commentId
+          },
+          success: function (backData) {
+            if (backData.code == 200) {
+              alert(backData.msg)
+              getData()
+            }
+          }
+        })
+      })
       // 给删除一个点击事件
+      $('tbody').on('click', 'a.btn-delete', function () {
+        var commentId = $(this).attr('data-id');
+        $.ajax({
+          type: 'post',
+          url: BigNew.comment_delete,
+          data: {
+            id: commentId
+          },
+          success: function (backData) {
+            if (backData.code == 200) {
+              alert(backData.msg)
+              getData()
+            }
+          }
+        })
+      })
     })
   </script>
 </body>
