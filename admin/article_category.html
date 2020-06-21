@@ -103,7 +103,7 @@
                 $.ajax({
                     url: BigNew.category_list,
                     success: function (backData) {
-                        console.log(backData);
+                        // console.log(backData);
                         if (backData.code == 200) {
                             var resHtml = template('Category_temp', backData)
                             $('tbody').html(resHtml)
